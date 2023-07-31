@@ -32,33 +32,17 @@ namespace PicTimeSortApplication.ViewModel
             string[] imageFiles = Directory.GetFiles(SelectedFolder, "*.*", SearchOption.TopDirectoryOnly).Where(file =>
             file.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
             file.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
-            file.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-            file.EndsWith(".heic", StringComparison.OrdinalIgnoreCase) ||
-            file.EndsWith(".dng", StringComparison.OrdinalIgnoreCase) ||
-            file.EndsWith(".arw", StringComparison.OrdinalIgnoreCase) ||
-            file.EndsWith(".sr2", StringComparison.OrdinalIgnoreCase) ||
-            file.EndsWith(".cr2", StringComparison.OrdinalIgnoreCase)).ToArray();
+            file.EndsWith(".png", StringComparison.OrdinalIgnoreCase)).ToArray();
 
-            int batchSize = 10;
-
-            for (int i = 0; i < imageFiles.Length; i += batchSize)
+            foreach (string imageFile in imageFiles)
             {
-                List<Picture> batchPictures = new List<Picture>();
-                int upperBound = Math.Min(i + batchSize, imageFiles.Length);
-
-                for (int j = i; j < upperBound; j++)
+                Picture picture = new Picture();
+                using (Image image = Image.FromFile(imageFile))
                 {
-                    string imagePath = imageFiles[j];
-                    Picture picture = new Picture();
-                    using (Image image = Image.FromFile(imagePath))
-                    {
-                        picture.PictureName = Path.GetFileName(imagePath);
-                        picture.DateTaken = GetImageDateTaken(image);
-                    }
-                    batchPictures.Add(picture);
+                    picture.PictureName = Path.GetFileName(imageFile);
+                    picture.DateTaken = GetImageDateTaken(image);
                 }
-
-                pictureRepo.AddRange(batchPictures);
+                pictureRepo.Add(picture);
             }
         }
 
