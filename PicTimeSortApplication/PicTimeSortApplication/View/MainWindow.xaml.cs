@@ -14,6 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
+using PicTimeSortApplication.ViewModel;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace PicTimeSortApplication
 {
@@ -22,6 +24,7 @@ namespace PicTimeSortApplication
     /// </summary>
     public partial class MainWindow : Window
     {
+        MainViewModel mvm = new MainViewModel();
         public MainWindow()
         {
             InitializeComponent();
@@ -29,16 +32,15 @@ namespace PicTimeSortApplication
 
         private void SelectFolderButton_Click(object sender, RoutedEventArgs e)
         {
-            using (var FileExplorerDialog = new FolderBrowserDialog())
-            {
-                FileExplorerDialog.ShowDialog();
-                SelectedFolderTextBox.Text = FileExplorerDialog.SelectedPath;
-            }
+            mvm.SelectFolder();
+            mvm.ReadFolder();
+            SelectedFolderTextBox.Text = mvm.SelectedFolder;
         }
 
         private void SortButton_Click(object sender, RoutedEventArgs e)
         {
-
+            mvm.SortFolder();
+            MessageBox.Show("Pictures have been sorted");
         }
     }
 }
